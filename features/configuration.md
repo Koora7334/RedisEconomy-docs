@@ -5,13 +5,28 @@ description: It is already documented on the config.yml
 # 📄 Configuration
 
 ```yaml
-# This is automatically generated on server startup (random UUID)
-# YOU MUST HAVE A DIFFERENT serverId FOR EVERY RedisEconomy instance
-serverId: 7e718dec-6b0f-4c01-8183-bceca638951b
 # Language file
 lang: en-US
 # Webeditor URL
 webEditorUrl: https://webui.advntr.dev/
+# Activate this before reporting an issue
+debug: false
+# A specific debug for cache update
+debugUpdateCache: false
+# If 0 registerCalls is disabled, if 1 it will log only the calling class
+# if 2 it will log the calling class and method, if 3 it will log the calling class, method and line number
+registerCallsVerbosity: 0
+# List of regex to be excluded from the registerCalls
+callBlacklistRegex:
+- ^org\.bukkit.*
+- ^io\.papermc.*
+- ^dev\.unnm3d\.rediseconomy.*
+- ^com\.mojang.*
+# if true, migrates the bukkit offline uuids accounts to the default RedisEconomy currency
+# During the migration, the plugin will be disabled. Restart all RedisEconomy instances after the migration.
+migrationEnabled: false
+# Allow paying with percentage (ex: /pay player 10% sends 'player' 10% of the sender balance)
+allowPercentagePayments: true
 # Leave password or user empty if you don't have a password or user
 # Don't use the default credentials in production!! Generate new credentials on RedisLabs -> https://github.com/Emibergo02/RedisEconomy/wiki/Install-redis
 # Default credentials lead to a non-persistent redis server, only for testing!!
@@ -21,28 +36,38 @@ redis:
   user: ''
   password: ''
   database: 0
-  timeout: 2000
+  timeout: 1000
   clientName: RedisEconomy
-
-# If true, the plugin registers who's calling it's methods inside transactions
-registerCalls: false
-# if true, migrates the bukkit offline uuids accounts to the default RedisEconomy currency
-# During the migration, the plugin will be disabled. Restart all RedisEconomy instances after the migration.
-migrationEnabled: false
+  ssl: false
+  poolSize: 10
+  tryAgainCount: 3
 # All RedisEconomy instances with the same cluster id will share the same data
 clusterId: ''
 # How many chars are needed for a command autocompletion
-# Increase if you have a lot of players to list 
-# so that your bandwidth wouldn't be saturated of usernames
+# Increase if you have a lot of players to list
 tab_complete_chars: 0
+# If true, the tab completion will show only online players. tab_complete_chars is applied
+tabOnlinePlayers: false
 # Default currency name (must be the same as the currency name in the currencies list)
 defaultCurrencyName: vault
 # Cooldown between payments in milliseconds
 payCooldown: 500
 # Minimum amount of money that can be paid
 minPayAmount: 0.01
-# Currencies
-# payTax is the tax on payments, 0.1 = 10% tax
+# Placeholder cache update interval in milliseconds
+placeholderCacheUpdateInterval: 5000
+# How many accounts to show in the %rediseco_top_number...% placeholder
+baltopPlaceholderAccounts: 100
+# Fixed pool size for making transactions
+transactionExecutorThreads: 3
+# Currency name must be less than 8 characters
+# Decimal format is for displaying currency amounts, e.g. '#,##0.00'. More info: https://www.baeldung.com/java-decimalformat
+# Language tag is for the decimal format, to use . or , as decimal separator, e.g. 'en-US' for . and 'de-DE' for ,
+# Pay tax is the tax that will be applied to all payments, e.g. 0.05 for 5%
+# Save transactions is for saving transactions in the database, if false, transactions are not saved
+# Transaction TTL is the time after which a transaction is considered expired and removed (THIS ONLY WORKS ON REDIS 7.4+)
+# Bank enable is to enable the bank feature on Vault API Economy class (which is extended by Currency class)
+# Executor threads are the number of threads to use for executing balance updates on this currency (optimal is 3)
 currencies:
 - currencyName: vault
   currencySingle: euro
@@ -50,20 +75,25 @@ currencies:
   decimalFormat: '#.##'
   languageTag: en-US
   startingBalance: 0.0
+  maxBalance: 1.0E14
   payTax: 0.0
+  saveTransactions: true
+  transactionsTTL: -1
   bankEnabled: true
   taxOnlyPay: false
+  executorThreads: 3
 - currencyName: dollar
   currencySingle: $
   currencyPlural: $
   decimalFormat: '#.##'
   languageTag: en-US
   startingBalance: 0.0
+  maxBalance: 1.0E14
   payTax: 0.0
+  saveTransactions: false
+  transactionsTTL: -1
   bankEnabled: false
   taxOnlyPay: false
-
-# Authors: Unnm3d
+  executorThreads: 2
 
 ```
-
