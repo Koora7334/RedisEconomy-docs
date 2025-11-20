@@ -2,7 +2,7 @@
 
 RedisEconomy is an affordable cross-server plugin for real-time management and synchronization of your in-game money across multiple servers
 
-The plugin is also proxy-less, meaning it **doesn't require any additional proxy plugins!!**\\
+The plugin is also proxy-less, meaning it **doesn't require any additional proxy plugins!!**\
 
 Unlike some data bridges, the data storage is Redis instead of a slow MySQL\
 More information [here (Benchmarks)](https://docs.google.com/spreadsheets/d/1f4gG-muUXa_wYlLxlLMRUk4cRT8UQCfLxoGgza-Mv-k)
